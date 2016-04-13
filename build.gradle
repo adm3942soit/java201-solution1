@@ -1,0 +1,139 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        jcenter()
+
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.2.3'
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE")
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+
+apply plugin: 'java'
+//apply plugin: 'com.bmuschko.tomcat'
+apply plugin: 'spring-boot'
+//apply plugin: 'war'
+
+/*
+jar {
+    baseName = 'securing-web'
+    version =  '0.1.0'
+}
+*/
+
+repositories {
+    mavenCentral()
+
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+task integrationTest(type: Test) {
+    /*include *CucumberTest.java'*/
+    doFirst {
+        println "Start tomcat container"
+        tomcatRun.daemon = true
+        tomcatRun.execute()
+    }
+    finalizedBy {
+        println "Stop tomcat container"
+        tomcatStop.execute()
+    }
+}
+test {
+    exclude '**/*CucumberTest.java'
+}
+
+jar{
+    baseName = 'securing-web'
+    version =  '0.1.0'
+    manifest {
+        attributes 'Main-Class': 'accenture.trainings.spring.security'
+    }
+}
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'accenture.trainings.spring.mvc.Application'
+}
+
+/*
+[tomcatRun, tomcatRunWar]*.contextPath = '/'
+[tomcatRun, tomcatRunWar]*.reloadable = true
+[tomcatRun, tomcatRunWar]*.configFile = file('src/main/resources/META-INF/context.xml')
+[tomcatRun, tomcatRunWar]*.httpPort = 8080
+[tomcatRun, tomcatRunWar, tomcatStop]*.stopPort = 8081
+[tomcatRun, tomcatStop]*.stopKey = 'stopKey'
+*/
+
+sourceSets {
+    main {
+        output.resourcesDir = "build/resources/"
+        java {
+            srcDir '/src/main/java'
+        }
+        resources {
+            srcDir '/src/main/resources'
+            srcDir '/src/main/resources/static/css'
+            srcDir '/src/main/resources/static/img'
+        }
+    }
+}
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'accenture.trainings.spring.security.Application'
+}
+
+dependencies {
+    def springVersion='4.1.1.RELEASE'
+    compile "org.springframework:spring-core:${springVersion}"
+    compile 'org.springframework.security:spring-security-test:4.0.1.RELEASE'
+
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf:1.2.7.RELEASE")
+    // tag::security[]
+    compile("org.springframework.boot:spring-boot-starter-security:1.2.7.RELEASE")
+    // end::security[]
+    compile 'junit:junit:4.12'
+    testCompile 'org.springframework.boot:spring-boot-starter-test:1.2.7.RELEASE'
+
+    compile("org.springframework.boot:spring-boot-starter:1.2.7.RELEASE")
+    compile("org.springframework.boot:spring-boot-starter-web:1.2.7.RELEASE")
+
+    testCompile 'info.cukes:cucumber-java8:1.2.4'
+    testCompile 'info.cukes:cucumber-junit:1.2.3'
+    compile 'commons-io:commons-io:2.4'
+    compile 'info.cukes:cucumber-jvm:1.2.4'
+    testCompile 'info.cukes:cucumber-spring:1.2.4'
+  //  testCompile 'org.springframework:spring-test:4.2.1.RELEASE'
+   // compile 'org.springframework.data:spring-data-commons:1.9.1.RELEASE'
+ /*   def tomcatVersion = '7.0.59'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+*/
+}
+/*tomcat {
+    httpPort = 8080
+    httpsPort = 8091
+    enableSSL = true
+    contextPath = '/'
+
+}*/
+//check.dependsOn integrationTest
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat 'full'
+        events 'started', 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+    }
+}
+
+sourceSets.test.output.resourcesDir = sourceSets.test.output.classesDir
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}

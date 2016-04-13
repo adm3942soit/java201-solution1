@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Spring Security Example </title>
+        <!--<link rel="stylesheet" type="text/templates.css" href="main.templates.css"/>
+
+        <style type="text/templates.css">
+            body {
+                background-image: url("bg.png");
+                background-size: 100%;
+            }
+        </style>-->
+
+    </head>
+    <body>
+        <div th:if="${param.error}">
+            Invalid username and password.
+        </div>
+        <div th:if="${param.logout}">
+            You have been logged out.
+        </div>
+        <form th:action="@{/login}" method="post">
+            <div><label style="width: 50px"> User Name : <input type="text" name="username"/> </label></div>
+            <div><label style="width: 50px"> Password  : <input type="password" name="password"/> </label></div>
+            <div><input type="submit" value="Sign In"/></div>
+        </form>
+      <!--  <templates.img style="width: 80%; height: 80%;padding-left: 10%  " src="Accenture.jpeg"/>-->
+      <!--  <br>-->
+        <div id="footer">
+            <div class="copyright" style="position:fixed; bottom:20px; left:20px;">
+
+                <h3 align="center">Copyright &#169; 2015 Accenture </h3>
+
+            </div>
+        </div>
+
+    </body>
+</html>

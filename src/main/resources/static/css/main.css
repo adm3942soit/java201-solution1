@@ -1,0 +1,22 @@
+#footer .copyright {
+    font-family: 'MV Boli';
+    font-weight: bold;
+    font-size: 24px;
+    text-fill: red;
+    -webkit-text-fill-color: black;
+    color: red;
+    text-align: left;
+    margin-top: 2em;
+    display: block;
+}
+.infoMessage
+{
+    color:green;
+    text-align: left;
+    font-family: "MV Boli";
+    font-size: 24px;
+    font-weight: bold;
+    display: block;
+    height: 26px;
+    padding-bottom: 1em;
+}
