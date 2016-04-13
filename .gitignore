@@ -6,10 +6,4 @@ target
 bin*
 build*
 !build.gradle
-.gradle
 .idea
-build
-bin
-gradle
-.classpath
-.project
